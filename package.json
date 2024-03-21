@@ -1,19 +1,19 @@
 {
-  "name": "auto-commit-gpt",
+  "name": "jchase-auto-commit-gpt",
   "displayName": "Auto Commit with GPT",
   "description": "Generate commit messages using ChatGPT",
   "version": "2.1.4",
-  "homepage": "https://github.com/sohanemon/AutoCommit#readme",
-  "bugs": "https://github.com/sohanemon/AutoCommit/issues",
+  "homepage": "https://github.com/jchase/AutoCommit#readme",
+  "bugs": "https://github.com/jchase/AutoCommit/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sohanemon/AutoCommit"
+    "url": "https://github.com/jchase/AutoCommit"
   },
   "license": "MIT",
   "engines": {
     "vscode": "^1.76.0"
   },
-  "publisher": "sohanemon",
+  "publisher": "jchase",
   "categories": [
     "Other",
     "SCM Providers"
