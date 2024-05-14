@@ -42,7 +42,7 @@ export const generateCommitMessage = async (
   // }
 
   const { data } = await openAI.createChatCompletion({
-    model: 'gpt-4-turbo-preview',
+    model: 'gpt-4o',
     messages: messages,
     temperature: 0,
     ['top_p']: 0.9,
