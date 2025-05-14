@@ -4,19 +4,23 @@
  * The original code can be found at https://github.com/Nutlope/aicommits/blob/develop/src/commands/aicommits.ts
  */
 
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
-import { assertGitRepo, getStagedDiff, stageAllChanges } from './utils/git';
-import { generateCommitMessage } from './utils/openai';
-import { runTaskWithTimeout } from './utils/timer';
+import { assertGitRepo, getStagedDiff, stageAllChanges } from "./utils/git";
+import { generateCommitMessage } from "./utils/openai";
+import { runTaskWithTimeout } from "./utils/timer";
 
-async function generateAICommitMessage(apiKey: string, delimeter?: string) {
+async function generateAICommitMessage(
+  apiKey: string,
+  model?: string,
+  delimeter?: string
+) {
   try {
     const assertResult = await assertGitRepo();
 
     if (!assertResult) {
       vscode.window.showErrorMessage(
-        'The current directory must be a Git repository!'
+        "The current directory must be a Git repository!"
       );
       return;
     }
@@ -24,12 +28,12 @@ async function generateAICommitMessage(apiKey: string, delimeter?: string) {
     const staged = await getStagedDiff();
 
     if (!staged) {
-      const result = await vscode.window.showQuickPick(['Yes', 'No'], {
+      const result = await vscode.window.showQuickPick(["Yes", "No"], {
         title: `Stage all changes now?`,
       });
 
-      if (result !== 'Yes') {
-        vscode.window.showErrorMessage('No staged changes found.');
+      if (result !== "Yes") {
+        vscode.window.showErrorMessage("No staged changes found.");
         return;
       } else {
         await stageAllChanges();
@@ -41,7 +45,7 @@ async function generateAICommitMessage(apiKey: string, delimeter?: string) {
       {
         location: vscode.ProgressLocation.Notification,
         cancellable: false,
-        title: 'Generating AI Commit message',
+        title: "Generating AI Commit message",
       },
       async (progress) => {
         let increment = 0;
@@ -57,7 +61,8 @@ async function generateAICommitMessage(apiKey: string, delimeter?: string) {
         const commitMessage = await generateCommitMessage(
           apiKey,
           staged.diff,
-          delimeter
+          delimeter,
+          model
         );
 
         return commitMessage;
@@ -66,7 +71,7 @@ async function generateAICommitMessage(apiKey: string, delimeter?: string) {
 
     if (!commitMessage) {
       vscode.window.showErrorMessage(
-        'No commit message were generated. Try again.'
+        "No commit message were generated. Try again."
       );
       return;
     }
@@ -80,7 +85,7 @@ async function generateAICommitMessage(apiKey: string, delimeter?: string) {
       return;
     }
 
-    vscode.window.showErrorMessage('Something went wrong. Please try again.');
+    vscode.window.showErrorMessage("Something went wrong. Please try again.");
     return;
   }
 }

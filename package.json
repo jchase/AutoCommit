@@ -61,6 +61,11 @@
           "type": "string",
           "default": "*",
           "description": "Delimeter between commit lines"
+        },
+        "autocommit.openAI.model": {
+          "type": "string",
+          "default": "gpt-4o",
+          "description": "OpenAI model name (e.g., gpt-4o, gpt-3.5-turbo)"
         }
       }
     }

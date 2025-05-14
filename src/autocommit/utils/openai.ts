@@ -4,15 +4,16 @@
  * The original code can be found at https://github.com/di-sukharev/opencommit/blob/master/src/api.ts.
  */
 
-import { Configuration, OpenAIApi } from 'openai';
+import { Configuration, OpenAIApi } from "openai";
 
-import { generateCommitMessageChatCompletionPrompt } from './completion';
-import { trimNewLines } from './text';
+import { generateCommitMessageChatCompletionPrompt } from "./completion";
+import { trimNewLines } from "./text";
 
 export const generateCommitMessage = async (
   apiKey: string,
   diff: string,
-  delimeter?: string
+  delimeter?: string,
+  model: string = "gpt-4o"
 ) => {
   const messages = generateCommitMessageChatCompletionPrompt(diff);
 
@@ -42,17 +43,17 @@ export const generateCommitMessage = async (
   // }
 
   const { data } = await openAI.createChatCompletion({
-    model: 'gpt-4o',
+    model: model,
     messages: messages,
     temperature: 0,
-    ['top_p']: 0.9,
-    ['max_tokens']: 60,
-    ['frequency_penalty']: 0,
-    ['presence_penalty']: 0,
+    ["top_p"]: 0.9,
+    ["max_tokens"]: 60,
+    ["frequency_penalty"]: 0,
+    ["presence_penalty"]: 0,
   });
 
   const message = data?.choices[0].message;
-  const commitMessage = message?.content?.replace(/[^\x00-\x7F]+/g, '');
+  const commitMessage = message?.content?.replace(/[^\x00-\x7F]+/g, "");
 
   if (commitMessage) {
     const alignedCommitMessage = trimNewLines(commitMessage, delimeter);

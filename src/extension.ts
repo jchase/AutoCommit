@@ -1,9 +1,9 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
-import generateAICommitMessage from './autocommit';
+import generateAICommitMessage from "./autocommit";
 
 async function getGitApi() {
-  const gitEntension = vscode.extensions.getExtension('vscode.git');
+  const gitEntension = vscode.extensions.getExtension("vscode.git");
 
   if (!gitEntension) {
     return;
@@ -19,27 +19,33 @@ async function getGitApi() {
 }
 
 function getOpenAiApiKey() {
-  const configuration = vscode.workspace.getConfiguration('autocommit');
-  const apiKey = configuration.get<string>('openAI.apiKey');
+  const configuration = vscode.workspace.getConfiguration("autocommit");
+  const apiKey = configuration.get<string>("openAI.apiKey");
   return apiKey;
 }
 
 async function setOpenAiApiKey(apiKey: string) {
-  const configuration = vscode.workspace.getConfiguration('autocommit');
+  const configuration = vscode.workspace.getConfiguration("autocommit");
   await configuration.update(
-    'openAI.apiKey',
+    "openAI.apiKey",
     apiKey,
     vscode.ConfigurationTarget.Global
   );
 }
 
 function getDelimeter() {
-  const configuration = vscode.workspace.getConfiguration('autocommit');
-  const delimeter = configuration.get<string>('appearance.delimeter');
-  if (delimeter?.trim() === '') {
+  const configuration = vscode.workspace.getConfiguration("autocommit");
+  const delimeter = configuration.get<string>("appearance.delimeter");
+  if (delimeter?.trim() === "") {
     return;
   }
   return delimeter;
+}
+
+function getOpenAiModel() {
+  const configuration = vscode.workspace.getConfiguration("autocommit");
+  const model = configuration.get<string>("openAI.model") ?? "gpt-4o";
+  return model;
 }
 
 async function setRepositoryCommitMessage(commitMessage: string) {
@@ -58,14 +64,14 @@ async function generateAICommitCommand() {
 
   if (!apiKey) {
     apiKey = await vscode.window.showInputBox({
-      prompt: 'Please enter your OpenAi API Key',
-      title: 'OpenAi API Key',
-      placeHolder: 'OpenAi API Key',
+      prompt: "Please enter your OpenAi API Key",
+      title: "OpenAi API Key",
+      placeHolder: "OpenAi API Key",
     });
 
-    if (!apiKey || apiKey.trim() === '') {
+    if (!apiKey || apiKey.trim() === "") {
       vscode.window.showErrorMessage(
-        'You should set OpenAi API Key before extension using!'
+        "You should set OpenAi API Key before extension using!"
       );
       return;
     }
@@ -74,7 +80,8 @@ async function generateAICommitCommand() {
   }
 
   const delimeter = getDelimeter();
-  const commitMessage = await generateAICommitMessage(apiKey, delimeter);
+  const model = getOpenAiModel();
+  const commitMessage = await generateAICommitMessage(apiKey, model, delimeter);
 
   if (!commitMessage) {
     return;
@@ -85,7 +92,7 @@ async function generateAICommitCommand() {
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand(
-    'autocommit.generateAICommit',
+    "autocommit.generateAICommit",
     generateAICommitCommand
   );
   context.subscriptions.push(disposable);
